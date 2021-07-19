@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { v4 as uuidv4 } from 'uuid';
-
+import PropTypes from 'prop-types';
+import styles from './ContactForm.module.css';
 class ContactForm extends Component {
   state = {
     name: '',
@@ -18,7 +19,6 @@ class ContactForm extends Component {
       number: this.state.number,
     };
     this.props.onSubmit(newContact);
-
     this.setState({
       name: '',
       number: '',
@@ -27,7 +27,7 @@ class ContactForm extends Component {
 
   render() {
     return (
-      <form onSubmit={this.hendelSubmit}>
+      <form className={styles.ContactForm} onSubmit={this.hendelSubmit}>
         <label>
           Name
           <input
@@ -57,4 +57,14 @@ class ContactForm extends Component {
     );
   }
 }
+ContactForm.propTypes = {
+  contacts: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.string.isRequired,
+      name: PropTypes.string.isRequired,
+      number: PropTypes.string.isRequired,
+    }),
+  ),
+  onSubmit: PropTypes.func.isRequired,
+};
 export default ContactForm;
