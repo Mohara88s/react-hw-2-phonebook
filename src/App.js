@@ -1,55 +1,43 @@
 import React, { Component } from 'react';
-import { v4 as uuidv4 } from 'uuid';
+import ContactForm from './components/ContactForm/ContactForm';
+import Filter from './components/Filter/Filter';
+import ContactList from './components/ContactList/ContactList';
 
 class App extends Component {
   state = {
-    contacts: [],
-    name: '',
+    contacts: [
+      { id: 'id-1', name: 'Rosie Simpson', number: '459-12-56' },
+      { id: 'id-2', name: 'Hermione Kline', number: '443-89-12' },
+      { id: 'id-3', name: 'Eden Clements', number: '645-17-79' },
+      { id: 'id-4', name: 'Annie Copeland', number: '227-91-26' },
+      { id: 'id-5', name: 'Sarah Connor', number: '725-61-18' },
+    ],
+    filter: '',
   };
-  hendelInputChange = event => {
-    this.setState({ [event.currentTarget.name]: event.currentTarget.value });
-  };
-  hendelSubmit = event => {
-    event.preventDefault();
 
-    const newContact = {
-      id: uuidv4(),
-      name: this.state.name,
-    };
-
+  addContact = contact => {
+    console.log(contact);
     this.setState(prevState => ({
-      contacts: [newContact, ...prevState.contacts],
+      contacts: [contact, ...prevState.contacts],
     }));
   };
 
+  hendelFindeInputChange = event => {
+    this.setState({ filter: event.currentTarget.value });
+  };
+
   render() {
-    const contactsList = this.state.contacts;
+    const { filter, contacts } = this.state;
+    const contactsFiltred = contacts.filter(contact =>
+      contact.name.toLowerCase().includes(filter.toLocaleLowerCase()),
+    );
     return (
       <>
-        <form onSubmit={this.hendelSubmit}>
-          <h2>Phonebook</h2>
-          <label>
-            Name
-            <input
-              type="text"
-              name="name"
-              pattern="^[a-zA-Zа-яА-Я]+(([' -][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*)*$"
-              title="Имя может состоять только из букв, апострофа, тире и пробелов. Например Adrian, Jacob Mercer, Charles de Batz de Castelmore d'Artagnan и т. п."
-              required
-              onChange={this.hendelInputChange}
-            />
-          </label>
-          <button type="submit">Save</button>
-        </form>
-
+        <h2>Phonebook</h2>
+        <ContactForm onSubmit={this.addContact} />
         <h2>Contacts</h2>
-        <ul>
-          {contactsList.map(({ id, name }) => (
-            <li key={id}>
-              <p>{name}</p>
-            </li>
-          ))}
-        </ul>
+        <Filter value={filter} onChange={this.hendelFindeInputChange} />
+        <ContactList contacts={contactsFiltred} />
       </>
     );
   }
